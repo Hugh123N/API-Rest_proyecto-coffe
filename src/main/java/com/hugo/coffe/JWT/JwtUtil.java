@@ -56,13 +56,13 @@ public class JwtUtil {
 
     // Crea el token JWT, firmándolo con la clave secreta y añadiendo claims, subject, fecha de emisión y expiración
     private String createToken(Map<String,Object> claims, String subject){
-        return Jwts.builder() // Utiliza el builder de JJWT para construir el token
-                .setClaims(claims) // Establece los claims que contiene el token
-                .setSubject(subject) // Establece el subject (nombre de usuario)
+        return Jwts.builder()            // Utiliza el builder de JJWT para construir el token
+                .setClaims(claims)       // Establece los claims que contiene el token
+                .setSubject(subject)     // Establece el subject (nombre de usuario)
                 .setIssuedAt(new Date(System.currentTimeMillis())) // Establece la fecha de emisión (hora actual)
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*10)) // Establece la fecha de expiración (10 horas a partir de ahora)
-                .signWith(SignatureAlgorithm.HS256, secret) // Firma el token usando el algoritmo HS256 y la clave secreta
-                .compact(); // Compacta el token en formato JWT
+                .signWith(SignatureAlgorithm.HS256, secret)        // Firma el token usando el algoritmo HS256 y la clave secreta
+                .compact();              // Compacta el token en formato JWT
     }
 
     // Valida si un token es válido comparando el nombre de usuario y verificando que el token no haya expirado
