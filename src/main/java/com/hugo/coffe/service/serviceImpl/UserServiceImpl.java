@@ -8,7 +8,10 @@ import com.hugo.coffe.model.User;
 import com.hugo.coffe.repository.UserRepository;
 import com.hugo.coffe.service.UserService;
 import com.hugo.coffe.utils.CoffeUtils;
+import com.hugo.coffe.wraper.UserWraper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.mapper.Mapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.StringReader;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -37,6 +38,10 @@ public class UserServiceImpl implements UserService {
     JwtUtil jwtUtil;
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    JwtFilter jwtFilter;
+    @Autowired
+    ModelMapper mapper;
     /*********************** SING UP **********************************/
     @Override
     public ResponseEntity<String> singUp(Map<String, String> requestMap) {
@@ -99,5 +104,27 @@ public class UserServiceImpl implements UserService {
         }
         return new ResponseEntity<String>("{\"message\":\""+"Malas credenciales."+"\"}"
                 ,HttpStatus.BAD_REQUEST);
+    }
+    /***********************  LISTA USER  ***************/
+    @Override
+    public ResponseEntity<List<UserWraper>> getAllUser() {
+        try {
+            if(jwtFilter.isAdmin()){
+                List<UserWraper> list=new ArrayList<>();
+                List<User> listUser=userRepository.findAll();
+                for(User user: listUser){
+                    if(user.getRole().equals("user")){
+                        UserWraper userWraper=new UserWraper();
+                        mapper.map(user,userWraper);
+                        list.add(userWraper);
+                    }
+                }
+                return new ResponseEntity<>(list,HttpStatus.OK);
+            }else
+                return new ResponseEntity<>(new ArrayList<>(),HttpStatus.UNAUTHORIZED);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
