@@ -3,9 +3,11 @@ package com.hugo.coffe.JWT;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     // La clave secreta para firmar el token, debe mantenerse privada
-    private String secret="btechdays";
+    private SecretKey secret= Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     // Extrae el nombre de usuario (subject) del token
     public String extractUsername(String token){

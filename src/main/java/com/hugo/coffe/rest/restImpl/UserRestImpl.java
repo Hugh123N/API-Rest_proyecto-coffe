@@ -29,7 +29,7 @@ public class UserRestImpl implements UserRest {
         return CoffeUtils.getResponseEntity(SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    /*@Override
+    @Override
     public ResponseEntity<String> login(Map<String, String> requestMap) {
         try{
             return userService.login(requestMap);
@@ -37,6 +37,6 @@ public class UserRestImpl implements UserRest {
             e.printStackTrace();
         }
         return CoffeUtils.getResponseEntity(SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
-    }*/
+    }
 
 }
