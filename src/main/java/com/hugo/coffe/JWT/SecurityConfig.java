@@ -49,7 +49,7 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()))
                 .csrf(AbstractHttpConfigurer::disable)   // Deshabilita CSRF
                 .authorizeHttpRequests(auth -> auth //authorizeHttpRequests
-                    .requestMatchers("/user/login", "/user/signup", "/user/forgotPassword")
+                    .requestMatchers("/user/login", "/user/signup", "/user/olvidoPassword")
                     .permitAll()  // Permite el acceso a estas rutas sin autenticación
                     .anyRequest().authenticated()  // Requiere autenticación para cualquier otra solicitud
                 )

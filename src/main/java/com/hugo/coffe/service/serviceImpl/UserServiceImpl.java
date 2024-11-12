@@ -1,5 +1,6 @@
 package com.hugo.coffe.service.serviceImpl;
 
+import com.google.common.base.Strings;
 import com.hugo.coffe.JWT.JwtFilter;
 import com.hugo.coffe.JWT.JwtUtil;
 import com.hugo.coffe.JWT.UserDetailsServiceImpl;
@@ -159,7 +160,7 @@ public class UserServiceImpl implements UserService {
             emailUtils.sentSimpleMessage(jwtFilter.getCurrentUser(),"cuenta deshabilitada", "USER:- "+user+"\n Esta desabilitada por \n ADMIN:- "+jwtFilter.getCurrentUser(), allAdmin);
     }
 
-    /***********************  UPDATE USER  STATUS***************/
+    /***********************  UPDATE USER  PASSWORD***************/
     @Override
     public ResponseEntity<String> checkToken() {
         return CoffeUtils.getResponseEntity("true", HttpStatus.OK);
@@ -183,5 +184,20 @@ public class UserServiceImpl implements UserService {
            e.printStackTrace();
        }
        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /*********************** OLVIDO PASSWORD / ENVIA CORREO AL USUARIO QUE SOLICITA ***************/
+    @Override
+    public ResponseEntity<String> olvidoPassword(Map<String, String> requestMap) {
+        try {
+            Optional<User> userOptional=userRepository.findByEmail(requestMap.get("email"));
+            if(userOptional.isPresent() && !Strings.isNullOrEmpty(userOptional.get().getEmail())){
+                emailUtils.olvidoEmail(userOptional.get().getEmail(),"Credencial por sistema de gestion de cafe",userOptional.get().getPassword());
+            }
+            return CoffeUtils.getResponseEntity("Revisa tu correo para ver las credenciales.", HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+       return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
