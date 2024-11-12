@@ -22,4 +22,10 @@ public interface UserRest {
     @PostMapping("/update")
     public ResponseEntity<String> update(@RequestBody(required = true) Map<String,String> requestMap);
 
+    @GetMapping("/checkToken")
+    ResponseEntity<String> checkToken();
+
+    @PostMapping("/cambioPassword")
+    ResponseEntity<String> cambioPassword(@RequestBody Map<String,String> requestMap);
+
 }

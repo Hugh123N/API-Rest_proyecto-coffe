@@ -158,4 +158,30 @@ public class UserServiceImpl implements UserService {
         }else
             emailUtils.sentSimpleMessage(jwtFilter.getCurrentUser(),"cuenta deshabilitada", "USER:- "+user+"\n Esta desabilitada por \n ADMIN:- "+jwtFilter.getCurrentUser(), allAdmin);
     }
+
+    /***********************  UPDATE USER  STATUS***************/
+    @Override
+    public ResponseEntity<String> checkToken() {
+        return CoffeUtils.getResponseEntity("true", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> cambioPassword(Map<String,String> requestMap) {
+       try {
+            Optional<User> userOptional=userRepository.findByEmail(jwtFilter.getCurrentUser());
+            if(userOptional.isPresent()){
+                User user=userOptional.get();
+               if(user.getPassword().equals(requestMap.get("oldPassword"))){
+                    user.setPassword(requestMap.get("newPassword"));
+                    userRepository.save(user);
+                   return CoffeUtils.getResponseEntity("La contraseña se cambio correctamente.",HttpStatus.OK);
+               }
+                return CoffeUtils.getResponseEntity("Password incorrecto.", HttpStatus.BAD_REQUEST);
+            }
+            return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+       return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

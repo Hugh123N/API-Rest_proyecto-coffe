@@ -15,4 +15,8 @@ public interface UserService {
     ResponseEntity<List<UserWraper>> getAllUser();
 
     ResponseEntity<String> update(Map<String,String> requestMap);
+
+    ResponseEntity<String> checkToken();
+
+    ResponseEntity<String> cambioPassword(Map<String,String> requesMap);
 }
