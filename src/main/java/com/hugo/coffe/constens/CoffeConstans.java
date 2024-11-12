@@ -6,4 +6,6 @@ public class CoffeConstans {
 
     public static final String INVALID_DATA = "Dato invalido.";
 
+    public static final String UNAAUTHORIZED_ACCESS="Acceso no autorizado.";
+
 }

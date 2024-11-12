@@ -29,8 +29,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<User> userOptional=userRepository.findByEmail(username);
         if(!Objects.isNull(userOptional)) {
             userDetail=userOptional.get();
-            return new org.springframework.security.core.userdetails.User(userDetail.getEmail(), userDetail.getPassword(), new ArrayList<>());
-
+            return new org.springframework.security.core.userdetails.User(
+                    userDetail.getEmail(), userDetail.getPassword(), new ArrayList<>());
         }else{
             throw new UsernameNotFoundException("user not found.");
         }

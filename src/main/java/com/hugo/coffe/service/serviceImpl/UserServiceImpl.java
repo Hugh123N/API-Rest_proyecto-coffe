@@ -8,6 +8,7 @@ import com.hugo.coffe.model.User;
 import com.hugo.coffe.repository.UserRepository;
 import com.hugo.coffe.service.UserService;
 import com.hugo.coffe.utils.CoffeUtils;
+import com.hugo.coffe.utils.EmailUtils;
 import com.hugo.coffe.wraper.UserWraper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.mapper.Mapper;
@@ -40,6 +41,8 @@ public class UserServiceImpl implements UserService {
     BCryptPasswordEncoder passwordEncoder;
     @Autowired
     JwtFilter jwtFilter;
+    @Autowired
+    EmailUtils emailUtils;
     @Autowired
     ModelMapper mapper;
     /*********************** SING UP **********************************/
@@ -126,5 +129,33 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    /***********************  UPDATE USER  STATUS***************/
+    @Override
+    public ResponseEntity<String> update(Map<String, String> requestMap) {
+        try {
+            if(jwtFilter.isAdmin()){
+                Optional<User> optional=userRepository.findById(Integer.parseInt(requestMap.get("id")));
+                if(optional.isPresent()){
+                    userRepository.updateStatus(Integer.parseInt(requestMap.get("id")),requestMap.get("status"));
+                    //lista de admins por su email
+                    sendMailAllAdmin(requestMap.get("status"), optional.get().getEmail(),userRepository.getAllAdmin());
+                    return CoffeUtils.getResponseEntity("Estado de Usuario actualizado con exito",HttpStatus.OK);
+                }else
+                    return CoffeUtils.getResponseEntity("El ID de Usuario no existe.",HttpStatus.OK);
+            }else
+                return CoffeUtils.getResponseEntity(CoffeConstans.UNAAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private void sendMailAllAdmin(String status, String user, List<String> allAdmin) {
+        allAdmin.remove(jwtFilter.getCurrentUser());
+        if(status!=null && status.equalsIgnoreCase("true")){
+            emailUtils.sentSimpleMessage(jwtFilter.getCurrentUser(),"Cuenta aprobada", "USER:- "+user+"\n Esta aprobada por \n ADMIN:- "+jwtFilter.getCurrentUser(), allAdmin);
+        }else
+            emailUtils.sentSimpleMessage(jwtFilter.getCurrentUser(),"cuenta deshabilitada", "USER:- "+user+"\n Esta desabilitada por \n ADMIN:- "+jwtFilter.getCurrentUser(), allAdmin);
     }
 }

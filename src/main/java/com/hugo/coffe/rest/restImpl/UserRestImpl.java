@@ -1,5 +1,6 @@
 package com.hugo.coffe.rest.restImpl;
 
+import com.hugo.coffe.constens.CoffeConstans;
 import com.hugo.coffe.rest.UserRest;
 import com.hugo.coffe.service.UserService;
 import com.hugo.coffe.utils.CoffeUtils;
@@ -50,6 +51,16 @@ public class UserRestImpl implements UserRest {
             e.printStackTrace();
         }
         return  new ResponseEntity<List<UserWraper>>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> update(Map<String, String> requestMap) {
+        try {
+            return userService.update(requestMap);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return CoffeUtils.getResponseEntity(SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
