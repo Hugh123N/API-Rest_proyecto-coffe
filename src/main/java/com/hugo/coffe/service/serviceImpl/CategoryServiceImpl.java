@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 @Slf4j //para uso de log
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -63,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
         return category;
     }
 
-    /***********************  LISTADO CATEGORIA***************/
+    /***********************  LISTADO CATEGORIA ***************/
     @Override
     public ResponseEntity<List<Category>> findAll(String filterValue) {
         try {
@@ -76,6 +78,30 @@ public class CategoryServiceImpl implements CategoryService {
             e.printStackTrace();
         }
         return new ResponseEntity<List<Category>>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /***********************  ACTUALIZAR CATEGORIA ***************/
+    @Override
+    public ResponseEntity<String> update(Map<String, String> requestMap) {
+        try {
+            if(jwtFilter.isAdmin()){
+                if(validateCategoryMap(requestMap,true)){
+                    Optional<Category> optional= categoryRepository.findById(Integer.parseInt(requestMap.get("id")));
+                    if(!optional.isEmpty()){
+                        categoryRepository.save(getCategoryFromMap(requestMap,true));
+                        return CoffeUtils.getResponseEntity("Categoria actualizado correctamente",HttpStatus.OK);
+                    }else{
+                        CoffeUtils.getResponseEntity("ID de la Categoria no existe.",HttpStatus.OK);
+                    }
+                }
+                return CoffeUtils.getResponseEntity(CoffeConstans.INVALID_DATA,HttpStatus.BAD_REQUEST);
+            }else{
+                return CoffeUtils.getResponseEntity(CoffeConstans.UNAAUTHORIZED_ACCESS,HttpStatus.UNAUTHORIZED);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

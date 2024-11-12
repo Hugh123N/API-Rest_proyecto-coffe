@@ -13,4 +13,6 @@ public interface CategoryService {
 
     ResponseEntity<List<Category>> findAll(String filterValue);
 
+    ResponseEntity<String> update(Map<String,String> requestMap);
+
 }
