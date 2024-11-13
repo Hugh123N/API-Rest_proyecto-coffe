@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -97,6 +98,30 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /***********************  ACTUALIZAR PRODUCTOS ***************/
+    @Override
+    public ResponseEntity<String> update(Map<String, String> requestMap) {
+        try {
+            if(jwtFilter.isAdmin()){
+                if(validateProductMap(requestMap,true)){
+                   Optional<Product> pro= productRepository.findById(Integer.parseInt(requestMap.get("id")));
+                    if(pro.isPresent()){
+                        Product product=getProductFromMap(requestMap,true);
+                        product.setStatus(pro.get().getStatus());
+                        productRepository.save(product);
+                        return CoffeUtils.getResponseEntity("Producto actualizado correctamente",HttpStatus.OK);
+                    }else
+                        return CoffeUtils.getResponseEntity("El ID de producto no existe",HttpStatus.OK);
+                }else
+                    return CoffeUtils.getResponseEntity(CoffeConstans.INVALID_DATA,HttpStatus.BAD_REQUEST);
+            }else
+                return CoffeUtils.getResponseEntity(CoffeConstans.UNAAUTHORIZED_ACCESS,HttpStatus.UNAUTHORIZED);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
