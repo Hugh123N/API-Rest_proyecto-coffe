@@ -7,11 +7,15 @@ import com.hugo.coffe.model.Product;
 import com.hugo.coffe.repository.ProductRepository;
 import com.hugo.coffe.service.ProductService;
 import com.hugo.coffe.utils.CoffeUtils;
+import com.hugo.coffe.wraper.ProductWraper;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,7 +25,10 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     @Autowired
     JwtFilter jwtFilter;
+    @Autowired
+    ModelMapper mapper;
 
+    /***********************  AGREGAR NUEVO PRODUCTO ***************/
     @Override
     public ResponseEntity<String> addNewProduct(Map<String, String> requestMap) {
         try {
@@ -38,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     // Método para validar los datos del producto en el mapa de solicitud
     private boolean validateProductMap(Map<String, String> requestMap, boolean validateId) {
         // Verifica si el mapa contiene la clave "name" (necesaria tanto para agregar como actualizar).
@@ -69,6 +77,26 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(requestMap.get("description"));
         product.setPrice(Double.parseDouble(requestMap.get("price")));
         return product;
+    }
+
+    /***********************  LISTADO PRODUCTOS ***************/
+    @Override
+    public ResponseEntity<List<ProductWraper>> getAllProduct() {
+        try {
+            List<Product> list=productRepository.findAll();
+            List<ProductWraper> listaPro=new ArrayList<>();
+                for(Product pro:list){
+                    ProductWraper producto=new ProductWraper();
+                    mapper.map(pro,producto);
+                    producto.setCategoryId(pro.getCategory().getId());
+                    producto.setCategoryName(pro.getCategory().getName());
+                    listaPro.add(producto);
+                }
+                return new ResponseEntity<>(listaPro,HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
