@@ -18,4 +18,6 @@ public interface ProductService {
 
     ResponseEntity<String> updateStatus(Map<String,String> requesMap);
 
+    ResponseEntity<List<ProductWraper>> getByCategory(Integer id);
+
 }

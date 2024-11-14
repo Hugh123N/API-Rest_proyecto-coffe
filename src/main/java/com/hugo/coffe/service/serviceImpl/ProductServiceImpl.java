@@ -144,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
         return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    /***********************  Actualizar estado PRODUCTOS ***************/
+    /***********************  ACTUALIZAR ESTADO PRODUCTOS ***************/
     @Override
     public ResponseEntity<String> updateStatus(Map<String, String> requesMap) {
         try {
@@ -161,6 +161,17 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
         }
         return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /***********************  LISTA PRODUCTO SEGUN CATEGORIA ***************/
+    @Override
+    public ResponseEntity<List<ProductWraper>> getByCategory(Integer id) {
+       try {
+            return new ResponseEntity<>(productRepository.getProductByCategory(id),HttpStatus.OK);
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+       return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

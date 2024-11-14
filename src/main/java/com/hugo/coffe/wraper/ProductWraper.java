@@ -19,4 +19,9 @@ public class ProductWraper {
      Integer categoryId;
      String categoryName;
 
+     public ProductWraper(Integer id, String name){
+      this.id=id;
+      this.name=name;
+     }
+
 }
