@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +119,25 @@ public class ProductServiceImpl implements ProductService {
                     return CoffeUtils.getResponseEntity(CoffeConstans.INVALID_DATA,HttpStatus.BAD_REQUEST);
             }else
                 return CoffeUtils.getResponseEntity(CoffeConstans.UNAAUTHORIZED_ACCESS,HttpStatus.UNAUTHORIZED);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /***********************  ELIMINAR PRODUCTOS ***************/
+    @Override
+    public ResponseEntity<String> delete(Integer id) {
+        try {
+            if(jwtFilter.isAdmin()){
+                Optional<Product> optional= productRepository.findById(id);
+                if(optional.isPresent()){
+                    productRepository.deleteById(optional.get().getId());
+                    return CoffeUtils.getResponseEntity("Producto eliminado correctamente", HttpStatus.OK);
+                }
+                return CoffeUtils.getResponseEntity("El ID del producto no existe.",HttpStatus.OK);
+            }else
+                return CoffeUtils.getResponseEntity(CoffeConstans.UNAAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
         }catch (Exception e){
             e.printStackTrace();
         }
