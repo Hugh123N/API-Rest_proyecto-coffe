@@ -144,4 +144,23 @@ public class ProductServiceImpl implements ProductService {
         return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /***********************  Actualizar estado PRODUCTOS ***************/
+    @Override
+    public ResponseEntity<String> updateStatus(Map<String, String> requesMap) {
+        try {
+            if(jwtFilter.isAdmin()){
+                Optional<Product> optional= productRepository.findById(Integer.parseInt(requesMap.get("id")));
+                if(optional.isPresent()){
+                    productRepository.updateStatus(requesMap.get("status"), Integer.parseInt(requesMap.get("id")));
+                    return CoffeUtils.getResponseEntity("Estado de producto actualizado correctamente.",HttpStatus.OK);
+                }
+                return CoffeUtils.getResponseEntity("El ID del producto no existe.",HttpStatus.OK);
+            }else
+                return CoffeUtils.getResponseEntity(CoffeConstans.UNAAUTHORIZED_ACCESS,HttpStatus.UNAUTHORIZED);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
