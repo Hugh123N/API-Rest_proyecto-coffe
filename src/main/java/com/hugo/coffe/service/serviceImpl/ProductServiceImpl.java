@@ -174,4 +174,25 @@ public class ProductServiceImpl implements ProductService {
        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /***********************  OBTENER PRODUCTO POR SU ID ***************/
+    @Override
+    public ResponseEntity<ProductWraper> getById(Integer id) {
+       try {
+           Optional<Product> optional=productRepository.findById(id);
+           if (optional.isPresent()) {
+               ProductWraper pro=new ProductWraper();
+               pro.setId(optional.get().getId());
+               pro.setName(optional.get().getName());
+               pro.setDescription(optional.get().getDescription());
+               pro.setPrice(optional.get().getPrice());
+               //mapper.map(optional.get(),pro);
+               return new ResponseEntity<ProductWraper>(pro, HttpStatus.OK);
+           }
+           return new ResponseEntity<ProductWraper>(new ProductWraper(), HttpStatus.OK);
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+       return new ResponseEntity<>(new ProductWraper(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

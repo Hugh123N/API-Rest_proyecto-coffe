@@ -20,4 +20,6 @@ public interface ProductService {
 
     ResponseEntity<List<ProductWraper>> getByCategory(Integer id);
 
+    ResponseEntity<ProductWraper> getById(Integer id);
+
 }

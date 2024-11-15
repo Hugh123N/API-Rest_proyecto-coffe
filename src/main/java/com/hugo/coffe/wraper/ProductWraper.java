@@ -24,4 +24,11 @@ public class ProductWraper {
       this.name=name;
      }
 
+     public ProductWraper(Integer id,String name, String description, Double price){
+      this.id=id;
+      this.name=name;
+      this.description=description;
+      this.price=price;
+     }
+
 }
