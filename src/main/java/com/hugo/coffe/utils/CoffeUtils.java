@@ -22,13 +22,13 @@ public class CoffeUtils {
     public static ResponseEntity<String> getResponseEntity(String responseMessage, HttpStatus httpStatus){
         return new ResponseEntity<String>("{\"message\":\""+responseMessage+"\"}", httpStatus);
     }
-
+    //para generar ID de la facturaa
     public static String getUUID(){
         Date date=new Date();
         long time=date.getTime();
         return "FACTURA-"+time;
     }
-
+    //obtener un json de textos que ingresara
     public static JSONArray getJsonArrayFromString(String data) throws JSONException {
         JSONArray jsonArray=new JSONArray(data);
         return jsonArray;

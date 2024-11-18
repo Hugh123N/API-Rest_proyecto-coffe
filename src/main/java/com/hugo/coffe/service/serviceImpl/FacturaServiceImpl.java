@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
 import java.lang.annotation.Documented;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -32,6 +34,7 @@ public class FacturaServiceImpl implements FacturaService {
     @Autowired
     JwtFilter jwtFilter;
 
+    /***********************  SAVE FACTURA Y GENERAR PDF DE REPORTE ***************/
     @Override
     public ResponseEntity<String> generateReport(Map<String, Object> requestMap) {
         log.info("Interno generateReport");
@@ -162,5 +165,22 @@ public class FacturaServiceImpl implements FacturaService {
         table.addCell((String) data.get("quantity"));
         table.addCell(Double.toString((Double) data.get("price")));
         table.addCell(Double.toString((Double) data.get("total")));
+    }
+
+    /***********************  LISTA DE FACTURACION ***************/
+    @Override
+    public ResponseEntity<List<Factura>> findAll() {
+        try {
+            List<Factura> lista;
+            if(jwtFilter.isAdmin()){
+                lista=facturaRepository.findAll();
+            }else{
+                lista=facturaRepository.getFacturaByUserName(jwtFilter.getCurrentUser());
+            }
+            return new ResponseEntity<>(lista,HttpStatus.OK);
+        }catch (Exception e){
+            log.error("Error en Listar Factura",e);
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
