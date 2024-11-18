@@ -20,10 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.lang.annotation.Documented;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -209,6 +207,7 @@ public class FacturaServiceImpl implements FacturaService {
         }
         return null;
     }
+
     //obtiene el byte de pdf
     private byte[] getByteArray(String filePatch) throws Exception {
         File fileInitial = new File(filePatch);
@@ -216,6 +215,22 @@ public class FacturaServiceImpl implements FacturaService {
         byte[] byteArray= IOUtils.toByteArray(targetStream);
         targetStream.close();
         return byteArray;
+    }
+
+    /***********************  ELIMINAR FACTURA ***************/
+    @Override
+    public ResponseEntity<String> delete(Integer id) {
+        try {
+            Optional<Factura> optional=facturaRepository.findById(id);
+            if(optional.isPresent()){
+                facturaRepository.deleteById(optional.get().getId());
+                return CoffeUtils.getResponseEntity("La factura fue eliminado con exito",HttpStatus.OK);
+            }
+            return CoffeUtils.getResponseEntity("El ID de la factura no existe",HttpStatus.OK);
+        }catch (Exception e){
+            log.error("error en delete factura ",e);
+        }
+        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

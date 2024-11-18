@@ -19,6 +19,7 @@ public interface FacturaRest {
     @PostMapping("getPdf")
     ResponseEntity<byte[]> getPdf(@RequestBody Map<String, Object> requestMap);
 
-
+    @PostMapping("delete/{id}")
+    ResponseEntity<String> deleteFactura(@PathVariable Integer id);
 
 }

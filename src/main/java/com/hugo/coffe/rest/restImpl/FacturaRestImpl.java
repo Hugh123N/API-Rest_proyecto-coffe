@@ -53,4 +53,14 @@ public class FacturaRestImpl implements FacturaRest {
         }
         return null;
     }
+
+    @Override
+    public ResponseEntity<String> deleteFactura(Integer id) {
+        try {
+            return facturaService.delete(id);
+        }catch (Exception e){
+            log.error("Error en deleteFactura Rest.",e);
+        }
+        return CoffeUtils.getResponseEntity(CoffeConstans.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
