@@ -43,4 +43,14 @@ public class FacturaRestImpl implements FacturaRest {
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    public ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) {
+        try {
+            return facturaService.getPdf(requestMap);
+        }catch (Exception e){
+            log.error("Error en findAll FactuaRestImpl.",e);
+        }
+        return null;
+    }
 }

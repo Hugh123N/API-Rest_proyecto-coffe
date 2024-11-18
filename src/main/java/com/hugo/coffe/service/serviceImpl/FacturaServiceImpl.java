@@ -11,13 +11,14 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.FileOutputStream;
+import java.io.*;
 import java.lang.annotation.Documented;
 import java.util.ArrayList;
 import java.util.List;
@@ -183,4 +184,39 @@ public class FacturaServiceImpl implements FacturaService {
         }
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    /***********************  OBTENER PDF Y SINO ESTA CREAR UNO NUEVO ***************/
+    @Override
+    public ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) {
+        log.info("interno getPdf: requestMap {}",requestMap);
+        try {
+            byte[] byteArray=new byte[0];
+            if(!requestMap.containsKey("uuid") && validateRequestMap(requestMap))
+                return new ResponseEntity<>(byteArray,HttpStatus.BAD_REQUEST);
+            //ubicacion del pdf con el uuid generado
+            String filePatch = CoffeConstans.STORE_LOCATION+"\\"+(String) requestMap.get("uuid")+".pdf";
+            if(CoffeUtils.isFileExist(filePatch)){
+                byteArray=getByteArray(filePatch);
+                return new ResponseEntity<>(byteArray,HttpStatus.OK);
+            }else{
+                requestMap.put("isGenerate",false);
+                generateReport(requestMap);
+                byteArray=getByteArray(filePatch);
+                return new ResponseEntity<>(byteArray,HttpStatus.OK);
+            }
+        }catch (Exception e){
+            log.error("Error en obtener pdf",e.getMessage());
+        }
+        return null;
+    }
+    //obtiene el byte de pdf
+    private byte[] getByteArray(String filePatch) throws Exception {
+        File fileInitial = new File(filePatch);
+        InputStream targetStream=new FileInputStream(fileInitial);
+        byte[] byteArray= IOUtils.toByteArray(targetStream);
+        targetStream.close();
+        return byteArray;
+    }
+
+
 }

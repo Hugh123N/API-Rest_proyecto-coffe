@@ -13,4 +13,6 @@ public interface FacturaService {
 
     ResponseEntity<List<Factura>> findAll();
 
+    ResponseEntity<byte[]> getPdf(Map<String,Object> requestMap);
+
 }

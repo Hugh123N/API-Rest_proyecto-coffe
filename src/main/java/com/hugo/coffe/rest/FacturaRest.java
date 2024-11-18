@@ -16,4 +16,9 @@ public interface FacturaRest {
     @GetMapping("getFactura")
     ResponseEntity<List<Factura>> findAll();
 
+    @PostMapping("getPdf")
+    ResponseEntity<byte[]> getPdf(@RequestBody Map<String, Object> requestMap);
+
+
+
 }
