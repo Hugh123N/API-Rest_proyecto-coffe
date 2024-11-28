@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
                new UsernamePasswordAuthenticationToken(requestMap.get("email"),requestMap.get("password")));
             if(auth.isAuthenticated()){
                 if(detailService.getUserDetails().getStatus().equalsIgnoreCase("true")){
-                    return new ResponseEntity<String>("\"token\":\""+jwtUtil.generateToken(
+                    return new ResponseEntity<String>("{\"token\":\""+jwtUtil.generateToken(
                             detailService.getUserDetails().getEmail(),
                             detailService.getUserDetails().getRole())+"\"}",
                             HttpStatus.OK);

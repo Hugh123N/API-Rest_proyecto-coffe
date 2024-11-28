@@ -55,7 +55,7 @@ public class FacturaServiceImpl implements FacturaService {
                 //Inicia
                 document.open();
                 setRectangleInPdf(document);
-                //creacioon del titulo del PDF
+                //creacion del titulo del PDF
                 Paragraph chunk=new Paragraph("Sistema manejo de Cafe", getFont("Header"));
                 chunk.setAlignment(Element.ALIGN_CENTER);
                 document.add(chunk);
