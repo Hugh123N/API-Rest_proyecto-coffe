@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j //para uso de log
+@Slf4j //para uso de log priueba para git hub
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
